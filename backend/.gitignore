@@ -1,0 +1,53 @@
+# ==================== Environment ====================
+.env
+.env.local
+.env.*.local
+
+# ==================== Dependencies ====================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ==================== IDE ====================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ==================== Build Outputs ====================
+dist/
+build/
+.next/
+out/
+
+# ==================== Testing ====================
+coverage/
+.nyc_output/
+*.lcov
+
+# ==================== Logs ====================
+logs/
+*.log
+
+# ==================== Database ====================
+*.db
+*.sqlite
+*.sqlite3
+
+# ==================== OS ====================
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# ==================== Temporary ====================
+tmp/
+temp/
+*.tmp
+
+# ==================== IDE Workspace Settings ====================
+.vscode/settings.json
+.vscode/extensions.json

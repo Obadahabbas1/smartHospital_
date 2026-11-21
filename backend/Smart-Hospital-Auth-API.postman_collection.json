@@ -1,0 +1,192 @@
+{
+  "info": {
+    "_postman_id": "smart-hospital-auth",
+    "name": "Smart Hospital - Authentication API",
+    "description": "Complete authentication API collection for Smart Hospital platform including signup, login, token refresh, and password reset.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"SecurePassword@123\",\n  \"confirmPassword\": \"SecurePassword@123\",\n  \"phone\": \"9876543210\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/signup",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "signup"]
+            },
+            "description": "Register a new user account\n\nRequired fields:\n- firstName: 2-50 characters\n- lastName: 2-50 characters\n- email: Valid email address (must be unique)\n- password: Min 8 chars, must contain uppercase, lowercase, digit, special char\n- confirmPassword: Must match password\n- phone: 10 digits"
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"SecurePassword@123\",\n  \"rememberMe\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login with email and password\n\nReturns:\n- accessToken (valid 7 days)\n- refreshToken (valid 30 days)\n- User information\n\nSecurity:\n- Takes longer than signup due to password hashing\n- Accounts lock after 5 failed attempts for 30 minutes"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Get current authenticated user's profile\n\nRequires:\n- Valid access token in Authorization header\n\nReturns:\n- User profile (all fields except password)"
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/refresh-token",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "refresh-token"]
+            },
+            "description": "Get new access token using refresh token\n\nUse when:\n- Access token has expired\n- Need to continue working without re-entering credentials\n\nReturns:\n- New access token (valid 7 days)\n\nNote:\n- Refresh token is valid for 30 days\n- After 30 days, user must login again"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Logout current user\n\nRequires:\n- Valid access token\n\nClient-side after logout:\n1. Remove tokens from storage\n2. Redirect to login page\n3. Clear user state"
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/forgot-password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "forgot-password"]
+            },
+            "description": "Request password reset email\n\nFlow:\n1. User enters email\n2. Server generates 1-hour reset token\n3. Email sent with reset link (in production)\n4. User clicks link in email\n5. User enters new password\n6. Call /reset-password with token\n\nSecurity:\n- Doesn't reveal if email exists\n- Token valid for only 1 hour\n- Reset tokens are single-use"
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"<reset_token_from_email>\",\n  \"newPassword\": \"NewSecurePassword@456\",\n  \"confirmPassword\": \"NewSecurePassword@456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/reset-password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "reset-password"]
+            },
+            "description": "Reset password with valid reset token\n\nParameters:\n- token: From password reset email (expires in 1 hour)\n- newPassword: Must meet strength requirements\n- confirmPassword: Must match newPassword\n\nAfter success:\n- User can login with new password\n- All old tokens are invalidated\n- Login attempts counter is reset"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
